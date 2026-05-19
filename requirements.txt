@@ -1,0 +1,11 @@
+anthropic
+requests
+beautifulsoup4
+python-dotenv
+pandas
+streamlit
+langchain
+langchain-anthropic
+langchain-community
+chromadb
+sentence-transformers
