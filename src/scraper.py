@@ -81,23 +81,74 @@ def get_speaker_urls(sitemap_url, limit=50):
     # Return only the first `limit` URLs
     return urls[:limit]
 
-# Get a list of speaker URLs from the sitemap
-sitemap_url = "https://londontechweek.com/__media/sitemap_speakers.xml"
-speaker_urls = get_speaker_urls(sitemap_url, limit=50)
+def get_session_urls(sitemap_url, limit=300):
+    """Fetch the agenda sitemap and return a list of session URLs."""
+    response = requests.get(sitemap_url)
+    soup = BeautifulSoup(response.text, "lxml-xml")
 
-# Scrape each speaker and collect the results
-speakers = []
-for i, url in enumerate(speaker_urls, start=1):
-    print(f"[{i}/{len(speaker_urls)}] Scraping {url}...")
-    speaker_data = scrape_speaker(url)
-    if speaker_data:
-        speakers.append(speaker_data)
-    time.sleep(0.5)  # Be polite - pause half a second between requests
+    loc_tags = soup.find_all("loc")
+    urls = [tag.text for tag in loc_tags]
+
+    print(f"Found {len(urls)} session URLs in sitemap")
+    return urls[:limit]
+
+def scrape_session(url):
+    """Fetch an agenda session page and extract its details."""
+    response = requests.get(url)
+
+    if response.status_code != 200:
+        print(f"Failed to fetch {url} (status {response.status_code})")
+        return None
+
+    soup = BeautifulSoup(response.text, "html.parser")
+
+    # Title - use the og:title meta tag (clean, no site suffix)
+    title_tag = soup.find("meta", attrs={"property": "og:title"})
+    title = title_tag["content"].strip() if title_tag else "Unknown"
+
+    # Time
+    time_tag = soup.find("time")
+    session_time = time_tag.text.strip() if time_tag else "Unknown"
+
+    # Stage / location
+    location_tag = soup.find("div", class_="m-seminar-entry__item__details__location")
+    stage = location_tag.text.strip() if location_tag else "Unknown"
+
+    # Theme / stream
+    stream_tag = soup.find("span", class_="m-seminar-entry__item__details__stream__name")
+    theme = stream_tag.text.strip() if stream_tag else "Unknown"
+
+    # Description - paragraph + bullets, flattened into clean text
+    desc_tag = soup.find("div", class_="m-seminar-entry__item__description")
+    description = desc_tag.get_text(separator=" ", strip=True) if desc_tag else "Unknown"
+
+    return {
+        "url": url,
+        "title": title,
+        "time": session_time,
+        "stage": stage,
+        "theme": theme,
+        "description": description,
+    }
+
+# Get a list of session URLs from the agenda sitemap
+agenda_sitemap = "https://londontechweek.com/__media/sitemap_agenda.xml"
+session_urls = get_session_urls(agenda_sitemap)
+
+# Scrape each session and collect the results
+sessions = []
+for i, url in enumerate(session_urls, start=1):
+    print(f"[{i}/{len(session_urls)}] Scraping {url}...")
+    session_data = scrape_session(url)
+    if session_data:
+        sessions.append(session_data)
+    time.sleep(0.5)  # Be polite
 
 # Save to JSON
-output_path = "data/raw/speakers.json"
+output_path = "data/raw/sessions.json"
 with open(output_path, "w", encoding="utf-8") as f:
-    json.dump(speakers, f, indent=2, ensure_ascii=False)
+    json.dump(sessions, f, indent=2, ensure_ascii=False)
 
-print(f"\nSuccessfully scraped {len(speakers)} speakers")
+print(f"\nSuccessfully scraped {len(sessions)} sessions")
 print(f"Saved to {output_path}")
+
