@@ -1,13 +1,5 @@
 [
   {
-    "url": "https://londontechweek.com/agenda",
-    "title": "2026 AGENDA",
-    "time": "09:00",
-    "stage": "Unknown",
-    "theme": "Unknown",
-    "description": "Unknown"
-  },
-  {
     "url": "https://londontechweek.com/agenda/next-wave-ai-building-scaling-winning-uk",
     "title": "The Next Wave of AI: Building, Scaling and Winning from the UK",
     "time": "14:00 -  14:30",
@@ -529,16 +521,16 @@
   },
   {
     "url": "https://londontechweek.com/agenda/planet-scale-intelligence-daily-earth-imaging-rewiring-climate-security-industry",
-    "title": "Planet-Scale Intelligence: How Daily Earth Imaging Is Rewiring Climate, Security and Industry",
-    "time": "09:35 -  10:00",
-    "stage": "Deep Tech Stage",
-    "theme": "SpaceTech & Robotics",
-    "description": "Planet operates the world’s largest fleet of Earth-imaging satellites, capturing the entire planet every day. This conversation with founder Will Marshall explores how real-time geospatial intelligence is transforming how nations monitor change, manage resources and respond to global risks. Can a living, daily map of Earth become the most powerful strategic dataset of the century? Explore how satellite intelligence is reshaping agriculture, climate resilience, supply chains and national security. Discover what ubiquitous geospatial data means for Europe’s competitiveness, sovereignty and industrial leadership."
+    "title": "Why Enterprises Need to Think about Geospatial AI, Today",
+    "time": "14:40 -  15:00",
+    "stage": "AI Arena",
+    "theme": "Enterprise Reinvented",
+    "description": "Leaders across agriculture, insurance, energy, forestry, supply chain, and beyond are turning to Geospatial AI to understand their changing environments. How a living, daily map of Earth imagery when fused with advanced AI analysis - called Planetary Intelligence - unlocks unprecedented insights to drive corporate decision-making. How automated change-detection algorithms are transforming corporate strategy, enabling enterprise leaders to automate asset monitoring, mitigate risk and respond to crises in real time."
   },
   {
     "url": "https://londontechweek.com/agenda/preparing-space-making-astronaut",
     "title": "Preparing for Space: The Making of an Astronaut",
-    "time": "10:00 -  10:30",
+    "time": "09:40 -  10:20",
     "stage": "Deep Tech Stage",
     "theme": "SpaceTech & Robotics",
     "description": ""
@@ -546,7 +538,7 @@
   {
     "url": "https://londontechweek.com/agenda/dual-use-security-space",
     "title": "The Space Infrastructure Race",
-    "time": "10:40 -  11:00",
+    "time": "10:30 -  11:00",
     "stage": "Deep Tech Stage",
     "theme": "SpaceTech & Robotics",
     "description": "Space is now critical infrastructure. Satellites underpin AI, finance, climate systems and defence. As orbital assets multiply and geopolitical tension rises, sovereignty in space becomes an industrial question, not a symbolic one. This session examines how nations build, deploy and protect dual-use space capability at scale, turning commercial innovation into interoperable, resilient systems across trusted partners. What space capabilities must allied nations physically build, secure and coordinate to remain strategically resilient in the 2030s? How do dual-use space systems move from venture-backed startups to trusted infrastructure? Where do orbital, launch, data or supply chain dependencies quietly undermine collective security at scale?"
@@ -1810,7 +1802,7 @@
   {
     "url": "https://londontechweek.com/agenda/state-space-tech",
     "title": "The State of Space Tech",
-    "time": "10:30 -  10:40",
+    "time": "10:20 -  10:30",
     "stage": "Deep Tech Stage",
     "theme": "SpaceTech & Robotics",
     "description": ""
@@ -1914,7 +1906,7 @@
   {
     "url": "https://londontechweek.com/agenda/chairpersons-opening-remarks-wv0v",
     "title": "Chairperson's Opening Remarks",
-    "time": "09:30 -  09:35",
+    "time": "09:30 -  09:40",
     "stage": "Deep Tech Stage",
     "theme": "SpaceTech & Robotics",
     "description": ""

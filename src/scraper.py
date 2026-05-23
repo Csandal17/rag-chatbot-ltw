@@ -152,3 +152,16 @@ with open(output_path, "w", encoding="utf-8") as f:
 print(f"\nSuccessfully scraped {len(sessions)} sessions")
 print(f"Saved to {output_path}")
 
+# # --- Clean the sessions data: remove non-session index pages ---
+# import json
+
+# with open("data/raw/sessions.json", "r", encoding="utf-8") as f:
+#     sessions = json.load(f)
+
+# # Keep only real sessions (those with a known stage)
+# clean_sessions = [s for s in sessions if s["stage"] != "Unknown"]
+
+# with open("data/raw/sessions.json", "w", encoding="utf-8") as f:
+#     json.dump(clean_sessions, f, indent=2, ensure_ascii=False)
+
+# print(f"Cleaned: kept {len(clean_sessions)} sessions, removed {len(sessions) - len(clean_sessions)}")
