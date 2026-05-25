@@ -59,6 +59,8 @@ def retrieve(query):
     if distance < DISTANCE_THRESHOLD:
         print(f"Decision:        DIRECT HIT (Tier 1)")
         print(f"Answer:          {closest_answer}")
+        answer = closest_answer
+        tier = 1                         # NEW: remember which tier answered
     else:
         print(f"Decision:        FALLBACK TO CLAUDE (Tier 2)")
         # Rebuild the top 3 as a list of dicts for context
@@ -70,9 +72,21 @@ def retrieve(query):
             })
         claude_answer = answer_with_claude(query, retrieved_pairs)
         print(f"Answer:          {claude_answer}")
+        answer = claude_answer
+        tier = 2                         # NEW: remember which tier answered
+
     print("-" * 60)
+    # NEW: hand back a labelled tray (dictionary) with three things
+    return {
+        "answer": answer,
+        "tier": tier,
+        "distance": distance,
+    }
 
 
-# --- Test with a few different queries ---
-retrieve("what time is the de-extinction session?")        # Tier 1 direct hit
-retrieve("are there any sessions about failure or resilience?")  # Tier 2: phrased loosely, needs synthesis
+# --- Test with a few different queries (only runs if you run this file directly) ---
+if __name__ == "__main__":
+    retrieve("what time is the de-extinction session?")        # Tier 1 direct hit
+    retrieve("are there any sessions about failure or resilience?")  # Tier 2: phrased loosely, needs synthesis
+
+    
