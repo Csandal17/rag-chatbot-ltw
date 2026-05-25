@@ -11,14 +11,55 @@ def load_brain():
 
 brain = load_brain()
 
+# --- Sidebar: about, stats, and event details ---
+with st.sidebar:
+    st.title("🤖 About")
+    st.markdown(
+        "An AI assistant for **London Tech Week 2026**. "
+        "Ask about sessions, speakers, and the schedule, and it "
+        "answers using a retrieval system built on the event's content."
+    )
 
-st.title("London Tech Week 2026 Assistant")
-st.caption("Ask about sessions, speakers, and the schedule.")
+    st.divider()
 
+    st.markdown("**⚙️ How it works**")
+    st.markdown(
+        "- **150** Q/A pairs indexed in a vector database\n"
+        "- **Tier 1:** instant answer on a confident match\n"
+        "- **Tier 2:** Claude synthesises an answer when needed"
+    )
+
+    st.divider()
+
+    st.markdown("**🎟️ The event**")
+    st.markdown(
+        "📅 **8–12 June 2026**\n\n"
+        "📍 Olympia London\n\n"
+        "🔗 [londontechweek.com](https://londontechweek.com)"
+    )
+    
+# --- Custom blue LTW header banner ---
+st.markdown(
+    """
+    <div style="
+        background-color: #2E2EFF;
+        padding: 28px 32px;
+        border-radius: 12px;
+        margin-bottom: 24px;
+    ">
+        <h1 style="color: #FFFFFF; margin: 0; font-size: 2.4rem;">
+            London Tech Week 2026 Assistant
+        </h1>
+        <p style="color: #FFFFFF; margin: 6px 0 0 0; font-size: 1rem; opacity: 0.9;">
+            📅 8–12 June 2026 &nbsp;·&nbsp; 📍 Olympia London
+        </p>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 # --- A box for the user to type their question ---
 question = st.text_input("Your question:")
-
 
 # --- When there's a question, hand it to the brain and show the answer ---
 if question:
@@ -32,4 +73,3 @@ if question:
     else:
         st.caption(f"🤖 Claude synthesis (Tier 2) · distance {result['distance']:.3f}")
 
-    
