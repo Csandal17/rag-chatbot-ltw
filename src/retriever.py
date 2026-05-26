@@ -25,7 +25,8 @@ def answer_with_claude(query, retrieved_pairs):
         context += f"Q: {pair['question']}\nA: {pair['answer']}\n\n"
 
     prompt = f"""You are a helpful assistant for London Tech Week 2026.
-Answer the user's question using ONLY the context below. 
+Answer the user's question using ONLY the context below.
+Write any email addresses or website addresses as plain text. Do not format them as clickable links or use markdown link formatting.
 If the context does not contain the answer, say you don't have that information.
 
 Context:
@@ -50,6 +51,7 @@ def retrieve(query):
 
     closest_question = results["documents"][0][0]
     closest_answer = results["metadatas"][0][0]["answer"]
+    closest_source = results["metadatas"][0][0]["source"]
     distance = results["distances"][0][0]
 
     print(f"Query:           {query}")
@@ -81,8 +83,8 @@ def retrieve(query):
         "answer": answer,
         "tier": tier,
         "distance": distance,
+        "source": closest_source,
     }
-
 
 # --- Test with a few different queries (only runs if you run this file directly) ---
 if __name__ == "__main__":

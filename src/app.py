@@ -1,5 +1,5 @@
 import streamlit as st
-
+st.set_page_config(initial_sidebar_state="expanded")
 import retriever  # our "brain" — the file with the retrieve() function
 
 
@@ -8,12 +8,12 @@ import retriever  # our "brain" — the file with the retrieve() function
 def load_brain():
     return retriever  # importing already ran the setup; just hand it back
 
-
 brain = load_brain()
 
 # --- Sidebar: about, stats, and event details ---
 with st.sidebar:
     st.title("🤖 About")
+
     st.markdown(
         "An AI assistant for **London Tech Week 2026**. "
         "Ask about sessions, speakers, and the schedule, and it "
@@ -24,7 +24,7 @@ with st.sidebar:
 
     st.markdown("**⚙️ How it works**")
     st.markdown(
-        "- **150** Q/A pairs indexed in a vector database\n"
+        "- **172** Q/A pairs indexed in a vector database\n"
         "- **Tier 1:** instant answer on a confident match\n"
         "- **Tier 2:** Claude synthesises an answer when needed"
     )
@@ -37,7 +37,11 @@ with st.sidebar:
         "📍 Olympia London\n\n"
         "🔗 [londontechweek.com](https://londontechweek.com)"
     )
-    
+
+    if st.button("🗑️ Clear chat"):
+        st.session_state.messages = []
+        st.rerun()
+
 # --- Custom blue LTW header banner ---
 st.markdown(
     """
@@ -58,18 +62,39 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# --- A box for the user to type their question ---
-question = st.text_input("Your question:")
+# --- Set up the conversation memory (only runs once, on first load) ---
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 
-# --- When there's a question, hand it to the brain and show the answer ---
-if question:
-    result = brain.retrieve(question)        # hand the question over, catch the tray
+    # --- Re-draw the whole conversation so far ---
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.write(message["content"])
+        if message.get("caption"):
+            st.caption(message["caption"])
 
-    st.write(result["answer"])               # show the answer text
+# --- The chat input box (sits at the bottom of the page) ---
+if question := st.chat_input("Ask about London Tech Week..."):
 
-    # Show a small badge saying which tier answered
+    # 1. Show the user's question immediately, and save it to memory
+    with st.chat_message("user"):
+        st.write(question)
+    st.session_state.messages.append({"role": "user", "content": question})
+
+    # 2. Hand the question to the brain and get the answer
+    result = brain.retrieve(question)
+
+    # 3. Build the tier badge text
     if result["tier"] == 1:
-        st.caption(f"🎯 Direct hit (Tier 1) · distance {result['distance']:.3f}")
+        caption = f"🎯 Direct hit (Tier 1) · source: {result['source']} · distance {result['distance']:.3f}"
     else:
-        st.caption(f"🤖 Claude synthesis (Tier 2) · distance {result['distance']:.3f}")
+        caption = f"🤖 Claude synthesis (Tier 2) · closest source: {result['source']} · distance {result['distance']:.3f}"
+        
+    # 4. Show the answer, and save it to memory (with its badge)
+    with st.chat_message("assistant"):
+        st.write(result["answer"])
+        st.caption(caption)
+    st.session_state.messages.append(
+        {"role": "assistant", "content": result["answer"], "caption": caption}
+    )
 
