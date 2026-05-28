@@ -25,8 +25,9 @@ with st.sidebar:
     st.markdown("**⚙️ How it works**")
     st.markdown(
         "- **172** Q/A pairs indexed in a vector database\n"
-        "- **Tier 1:** instant answer on a confident match\n"
-        "- **Tier 2:** Claude synthesises an answer when needed"
+        "- 🎯 **Tier 1:** Direct hit\n"
+        "- 🤖 **Tier 2:** Claude synthesis\n"
+        "- 🌐 **Tier 3:** TavilyWeb search"
     )
 
     st.divider()
@@ -87,9 +88,11 @@ if question := st.chat_input("Ask about London Tech Week..."):
     # 3. Build the tier badge text
     if result["tier"] == 1:
         caption = f"🎯 Direct hit (Tier 1) · source: {result['source']} · distance {result['distance']:.3f}"
-    else:
+    elif result["tier"] == 2:
         caption = f"🤖 Claude synthesis (Tier 2) · closest source: {result['source']} · distance {result['distance']:.3f}"
-        
+    else:
+        caption = f"🌐 Web search (Tier 3) · {result['source']}"
+
     # 4. Show the answer, and save it to memory (with its badge)
     with st.chat_message("assistant"):
         st.write(result["answer"])

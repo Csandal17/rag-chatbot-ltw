@@ -10,3 +10,4 @@ langchain-community
 chromadb
 sentence-transformers
 lxml
+tavily-python==0.7.24
