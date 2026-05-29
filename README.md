@@ -10,10 +10,11 @@ Built as the project for the Codecademy *Building Agentic AI Applications for Be
 
 Ask the assistant a question about London Tech Week 2026 (8–12 June 2026, Olympia London) and it answers using a hybrid retrieval system built on the event's own content — 172 question-and-answer pairs stored in a vector database.
 
-It uses a **two-tier hybrid retrieval** approach:
+It uses a **three-tier hybrid retrieval** approach:
 
-- **Tier 1 — Direct hit:** if the question closely matches a stored question, the stored answer is returned instantly (no LLM call needed).
-- **Tier 2 — Claude synthesis:** if there's no confident match, the top related pairs are passed to Claude, which synthesises a grounded answer from them.
+- **🎯 Tier 1 — Direct hit:** if the question closely matches a stored question, the stored answer is returned instantly (no LLM call needed).
+- **🤖 Tier 2 — Claude synthesis:** if there's no confident match, the top related pairs are passed to Claude, which synthesises a grounded answer from them.
+- **🌐 Tier 3 — Live web search:** if the question isn't covered by the stored content at all, the assistant falls back to a live web search via the Tavily API, so the user still gets a useful answer instead of "I don't know."
 
 Each answer shows its **source** and a **confidence (distance) score**, so you can see where it came from.
 
@@ -50,6 +51,7 @@ The pipeline: scrape the site via its XML sitemaps → save raw data → generat
 - **LLM (Q/A generation and Tier 2 answers):** Anthropic Claude API (`claude-sonnet-4-6`)
 - **Vector database:** ChromaDB, using its default local embedding model (sentence-transformers `all-MiniLM-L6-v2`)
 - **User interface:** Streamlit
+- **Web search fallback (Tier 3):** Tavily API (`tavily-python`)
 - **Other:** pandas, python-dotenv
 
 ---
@@ -98,12 +100,13 @@ rag-chatbot-ltw/
    pip install -r requirements.txt
    ```
 
-4. **Add your Anthropic API key**
+4. **Add your Anthropic & Tavily API key**
 
    Create a file called `.env` in the project root with:
 
    ```
    ANTHROPIC_API_KEY=your-key-here
+   TAVILY_API_KEY=your-tavily-key-here
    ```
 
 5. **Build the vector store** (creates the `chroma_db/` folder from the Q/A data)
@@ -124,7 +127,7 @@ rag-chatbot-ltw/
 
 ## Features
 
-- Two-tier hybrid retrieval (direct hit + LLM synthesis)
+- Three-tier hybrid retrieval (direct hit → Claude synthesis → live web search)
 - Chat interface with conversation memory
 - Source citation and confidence score under every answer
 - Clear chat button

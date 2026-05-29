@@ -26,8 +26,8 @@ with st.sidebar:
     st.markdown(
         "- **172** Q/A pairs indexed in a vector database\n"
         "- 🎯 **Tier 1:** Direct hit\n"
-        "- 🤖 **Tier 2:** Claude synthesis\n"
-        "- 🌐 **Tier 3:** TavilyWeb search"
+        "- 🤖 **Tier 2:** AI synthesis\n"
+        "- 🌐 **Tier 3:** Web search"
     )
 
     st.divider()
