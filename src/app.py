@@ -1,7 +1,7 @@
 import streamlit as st
 st.set_page_config(initial_sidebar_state="expanded")
 import retriever  # our "brain" — the file with the retrieve() function
-
+from voice import generate_speech
 
 # --- Open Chroma ONCE and remember it, instead of every time the page re-runs ---
 @st.cache_resource
@@ -67,20 +67,49 @@ st.markdown(
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-    # --- Re-draw the whole conversation so far ---
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.write(message["content"])
-        if message.get("caption"):
-            st.caption(message["caption"])
+# --- Set up audio cache: maps message index → audio bytes for played voice answers ---
+if "audio_cache" not in st.session_state:
+    st.session_state.audio_cache = {}
 
-# --- The chat input box (sits at the bottom of the page) ---
+# --- Helper: render one assistant message with its audio button ---
+# Defined once, called from the replay loop below.
+def render_assistant_message(message_text: str, caption_text: str, message_index: int):
+    """Render an assistant answer with its tier badge and 🔊 Listen button/player."""
+    st.write(message_text)
+    st.caption(caption_text)
+
+    # If audio for this message has been generated before, show the player
+    if message_index in st.session_state.audio_cache:
+        st.audio(st.session_state.audio_cache[message_index], format="audio/mp3")
+    else:
+        # Otherwise, show a button to generate it on demand
+        if st.button("🔊 Listen", key=f"listen_{message_index}"):
+            with st.spinner("Generating audio..."):
+                audio_bytes = generate_speech(message_text)
+            if audio_bytes is None:
+                st.warning("Audio unavailable. Please try again.")
+            else:
+                st.session_state.audio_cache[message_index] = audio_bytes
+                st.rerun()
+
+
+# --- Replay the whole conversation so far on every re-run ---
+# This is what makes buttons on old messages keep working.
+for idx, message in enumerate(st.session_state.messages):
+    with st.chat_message(message["role"]):
+        if message["role"] == "assistant":
+            render_assistant_message(message["content"], message.get("caption", ""), idx)
+        else:
+            st.write(message["content"])
+
+
+# --- Handle a new question (only when the user submits one) ---
 if question := st.chat_input("Ask about London Tech Week..."):
 
-    # 1. Show the user's question immediately, and save it to memory
+    # 1. Save the user's question to memory and show it
+    st.session_state.messages.append({"role": "user", "content": question})
     with st.chat_message("user"):
         st.write(question)
-    st.session_state.messages.append({"role": "user", "content": question})
 
     # 2. Hand the question to the brain and get the answer
     result = brain.retrieve(question)
@@ -93,11 +122,11 @@ if question := st.chat_input("Ask about London Tech Week..."):
     else:
         caption = f"🌐 Web search (Tier 3) · {result['source']}"
 
-    # 4. Show the answer, and save it to memory (with its badge)
-    with st.chat_message("assistant"):
-        st.write(result["answer"])
-        st.caption(caption)
+    # 4. Save the answer to memory and render it (including audio button)
     st.session_state.messages.append(
         {"role": "assistant", "content": result["answer"], "caption": caption}
     )
-
+    message_index = len(st.session_state.messages) - 1
+    with st.chat_message("assistant"):
+        render_assistant_message(result["answer"], caption, message_index)
+        

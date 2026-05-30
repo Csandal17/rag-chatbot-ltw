@@ -4,3 +4,5 @@ __pycache__/
 .DS_Store
 venv/
 .venv/
+test.mp3
+test_voice_module.mp3
