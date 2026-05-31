@@ -15,6 +15,7 @@ It uses a **three-tier hybrid retrieval** approach:
 - **🎯 Tier 1 — Direct hit:** if the question closely matches a stored question, the stored answer is returned instantly (no LLM call needed).
 - **🤖 Tier 2 — Claude synthesis:** if there's no confident match, the top related pairs are passed to Claude, which synthesises a grounded answer from them.
 - **🌐 Tier 3 — Live web search:** if the question isn't covered by the stored content at all, the assistant falls back to a live web search via the Tavily API, so the user still gets a useful answer instead of "I don't know."
+- Every answer also has a **🔊 Listen** button that converts the response to natural speech via ElevenLabs, giving users an audio-first way to hear answers.
 
 Each answer shows its **source** and a **confidence (distance) score**, so you can see where it came from.
 
@@ -52,6 +53,7 @@ The pipeline: scrape the site via its XML sitemaps → save raw data → generat
 - **Vector database:** ChromaDB, using its default local embedding model (sentence-transformers `all-MiniLM-L6-v2`)
 - **User interface:** Streamlit
 - **Web search fallback (Tier 3):** Tavily API (`tavily-python`)
+- **Voice answers:** ElevenLabs API (`elevenlabs`)
 - **Other:** pandas, python-dotenv
 
 ---
@@ -107,6 +109,7 @@ rag-chatbot-ltw/
    ```
    ANTHROPIC_API_KEY=your-key-here
    TAVILY_API_KEY=your-tavily-key-here
+   ELEVENLABS_API_KEY=your-elevenlabs-key-here
    ```
 
 5. **Build the vector store** (creates the `chroma_db/` folder from the Q/A data)
@@ -128,6 +131,7 @@ rag-chatbot-ltw/
 ## Features
 
 - Three-tier hybrid retrieval (direct hit → Claude synthesis → live web search)
+- Voice playback of answers via ElevenLabs text-to-speech
 - Chat interface with conversation memory
 - Source citation and confidence score under every answer
 - Clear chat button
